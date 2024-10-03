@@ -1,0 +1,608 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Income Tax Calculator</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman Regular', Times, serif;
+        }
+
+        body {
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 80%;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            margin: auto;
+        }
+
+        .container h2 {
+            text-align: center;
+        }
+        
+        .container p {
+            text-align: justify;
+        }
+
+        label {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        input {
+            margin-bottom: 20px;
+            border: none;
+            font-size: 20px;
+            border-bottom: 2px solid #585858;
+            color: #585858;
+            padding: 2px 15px;
+            width: 100%;
+        }
+
+        input:focus {
+            outline: none;
+            border-bottom: 2.4px solid #01e26e;
+        }
+
+        .input-wrapper {
+            display: row;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .input-wrapper input {
+            width: calc(100% - 40px);
+        }
+
+        select {
+            width: 35%;
+            border: 1px solid #585858;
+            font-size: 10px;
+            margin-left: 3%;
+            padding: 8px 0;
+            border-radius: 5px;
+        }
+
+        button {
+            display: block;
+            margin: auto;
+            background-color: #01e26e;
+            border: none;
+            color: #ffffff;
+            margin: 20px auto 0 auto;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 5px;
+        }
+
+        .accordion {
+            display: flex;
+            background-color: #c6ffe2;
+            color: #000;
+            cursor: pointer;
+            padding: 18px;
+            width: 80%;
+            border: 0.1rem;
+            text-align: left;
+            outline: none;
+            font-size: 20px;
+            transition: background-color 0.3s;
+            margin: auto;
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .dropdown-symbol {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #000;
+        }
+
+        .active,
+        .accordion:hover {
+            background-color: #ddd;
+        }
+
+        .panel {
+            padding: 0 18px;
+            width: 80%;
+            margin: auto;
+            display: none;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .active+.panel {
+            display: block;
+        }
+
+        .panel.show {
+            display: block;
+        }
+
+        .radio-wrapper {
+            display: flex;
+            align-items: left;
+        }
+
+        .radio-wrapper input[type="radio"] {
+            margin: auto;
+            width: 20px;
+            height: 20px;
+
+        }
+
+        .radio-label {
+            font-size: 1.2rem;
+            margin: auto;
+        }
+
+        .input-label-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-label-wrapper label {
+            font-size: 1.2rem;
+            width: 490px;
+        }
+
+        .input-label-wrapper input {
+            width: 490px;
+            flex: 1;
+            margin: auto;
+        }
+
+        #result {
+            background-color: #c6ffe2;
+            margin-top: 30px;
+            color: #585858;
+            text-align: center;
+            font-size: 18px;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        #result div {
+            margin-bottom: 10px;
+        }
+
+        #result span {
+            color: #000000;
+            font-weight: 500;
+        }
+
+        #result2 {
+            background-color: #c6ffe2;
+            margin-top: 30px;
+            color: #585858;
+            text-align: center;
+            font-size: 18px;
+            padding: 20px;
+            border-radius: 5px;
+        	}
+            
+            #result2 div {
+            margin-bottom: 10px;
+        	}
+
+            #result2 span {
+                color: #000000;
+                font-weight: 500;
+            }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 80vw;
+                max-width: 400px;
+                min-width: 150px;
+                padding: 60px 30px;
+                border-radius: 10px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            }
+
+            .input-wrapper {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            input,
+            select {
+                font-size: 16px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+
+            #result {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            #result2 {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+       
+        <!--INCOME -->
+        <div class="accordion">Income<span class="dropdown-symbol"></span></div>
+        <div class="panel">
+            <div class="input-label-wrapper">
+                <label for="GSI">Gross Salary Income : </label>
+                <input type="number" id="GSI" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="AIO">Annual Income from other resources : </label>
+                <input type="number" id="AIO" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="AII">Annual Income Interest: </label>
+                <input type="number" id="AII" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="AIRI">Annual income from let-out house property (rental income): </label>
+                <input type="number" id="AIRI" value="" />
+            </div>
+
+            <div class="input-label-wrapper">
+                <label for="AIHS">Annual interest paid on home loan (self-occupied):</label>
+                <input type="number" id="AIHS" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="AIHO">Annual interest paid on home loan (lt-out):</label>
+                <input type="number" id="AIHO" value="" />
+            </div>
+        </div>
+
+        <!--DEDUCTIONS-->
+        <div class="accordion">Deductions<span class="dropdown-symbol"></i></span></div>
+        <div class="panel">
+            <div class="input-label-wrapper">
+                <label for="GSI">Basic deductions u/s 80C: </label>
+                <input type="number" id="80C" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80CCD(1B)">Contribution to NPS u/s 80CCD(1B) : </label>
+                <input type="number" id="80CCD(1B)" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80D">Medical Insurance Premium u/s 80D: </label>
+                <input type="number" id="80D" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80G">Donation to charity u/s 80G: </label>
+                <input type="number" id="80G" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80E">Interest on Educational Loan u/s 80E:</label>
+                <input type="number" id="80E" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80TTA/TTB">Interest on deposits in saving account u/s 80TTA/TTB:</label>
+                <input type="number" id="80TTA/TTB" value="" />
+            </div>
+        </div>
+        <!--HRA EXEMPTION-->
+        <div class="accordion">HRA Exemption<span class="dropdown-symbol"></span></div>
+        <div class="panel">
+            <div class="input-label-wrapper">
+                <label for="GSI">Basic salary received per annum: </label>
+                <input type="number" id="HS" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80CCD(1B)">Dearness allowance (DA) received per annum : </label>
+                <input type="number" id="DA" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80D">HRA received per annum: </label>
+                <input type="number" id="HRA" value="" />
+            </div>
+            <div class="input-label-wrapper">
+                <label for="80G">Total rent paid per annum: </label>
+                <input type="number" id="TRP" value="" />
+            </div>
+        </div>
+
+        <button id="calculate-btn">Calculate</button>
+        <div class="result" id="result"></div>
+        <div class="result2" id="result2"></div>
+		
+    </div>
+
+	<br></br>
+    <br></br>
+  	<div class="container">
+	<br></br>
+    <br></br>
+    <h2> What is Income Tax Calculator</h2>
+    <br></br>
+    <p>
+      An Income-tax calculator is an online tool that helps to evaluate taxes based on a person’s income once the Union Budget for the year is announced. Individuals falling under the taxable income bracket are liable to pay a specific portion of their net annual income as tax. Income tax can be paid either as tax deducted at source while disbursement of monthly salary, or through the income tax returns portal managed by the Central Board of Direct Taxes (CBDT). The provision for online payment of taxes is to ensure individuals pay their stipulated dues on any earnings generated from other sources.
+
+The IT calculator given on this page is aligned with the updates announced in the Union Budget for FY 2023-24 and AY 2024-25.
+	</p>
+  	</div>
+
+    <script>
+        let accordions = document.querySelectorAll(".accordion");
+
+        // Loop through all accordion elements
+        accordions.forEach(accordion => {
+            // Add click event listener to each accordion
+            accordion.addEventListener("click", function () {
+                // Toggle the "active" class to change background color on click
+                this.classList.toggle("active");
+
+                // Get the panel associated with this accordion
+                let panel = this.nextElementSibling;
+
+                // Toggle the display of the panel
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        });
+
+        function calculateIncomeTax() {
+
+            let previousSlab = 0;
+            let finalTax = 0;
+
+            //Define slab values:
+            const upto_2pt5 = 0;
+            const from2pt5_upto_5 = 12500;
+            const from5_to_7pt5 = 50000;
+            const from7pt5_to_10 = 50000;
+            const from10_to_12pt5 = 75000;
+            const from12pt5_to_15 = 75000;
+
+
+            // Get income details
+            let grossSalaryIncome = parseFloat(document.getElementById("GSI").value) || 0;
+            let annualIncomeOtherResources = parseFloat(document.getElementById("AIO").value) || 0;
+            let annualIncomeInterest = parseFloat(document.getElementById("AII").value) || 0;
+            let annualIncomeRental = parseFloat(document.getElementById("AIRI").value) || 0;
+            let interestHomeSelf = parseFloat(document.getElementById("AIHS").value) || 0;
+
+            // Get deduction details
+
+            let basicDeductions80C = parseFloat(document.getElementById("80C").value) || 0;
+            let contributionNPS = parseFloat(document.getElementById("80CCD(1B)").value) || 0;
+            let medicalInsurancePremium = parseFloat(document.getElementById("80D").value) || 0;
+            let donationCharity = parseFloat(document.getElementById("80G").value) || 0;
+            let interestEducationalLoan = parseFloat(document.getElementById("80E").value) || 0;
+            let interestSavingAccount = parseFloat(document.getElementById("80TTA/TTB").value) || 0;
+
+            // Get HRA exemption details
+            const basicSalary = parseFloat(document.getElementById("HS").value) || 0;
+            const dearnessAllowance = parseFloat(document.getElementById("DA").value) || 0;
+            const hraReceived = parseFloat(document.getElementById("HRA").value) || 0;
+            const totalRentPaid = parseFloat(document.getElementById("TRP").value) || 0;
+            
+            
+            //Income_details
+            
+            if (annualIncomeRental > 0){
+            annualIncomeRental = (0.7 * annualIncomeRental)
+            }
+            let totalIncome = grossSalaryIncome + annualIncomeOtherResources + annualIncomeInterest + annualIncomeRental - interestHomeSelf
+
+
+            //Deductions
+
+            // Standard_deduction
+            const standardDeduction = 50000;
+
+            //HRA Deduction Calculation
+            //Rent paid - 10% basic salary
+        
+            const HraDeduction = totalRentPaid - ((10/100)* (basicSalary + dearnessAllowance));
+
+            totalIncome = totalIncome - standardDeduction - HraDeduction
+
+            //Other deductions
+            
+            
+
+			if (basicDeductions80C > 150000 &&  contributionNPS > 50000){
+                basicDeductions80C = 150000;
+                contributionNPS = 50000;
+            }
+            if (basicDeductions80C > 150000){
+            	basicDeductions80C = 150000
+            }
+            else{
+            savemore = 150000 - basicDeductions80C;
+            }
+			if (contributionNPS > 50000) {
+                contributionNPS = 50000;
+            }
+            if (medicalInsurancePremium > 25000) {
+                medicalInsurancePremium = 25000;
+            }
+            if (interestSavingAccount > 10000) {
+                interestSavingAccount = 10000;
+            }
+
+
+            const otherDeductions = basicDeductions80C + contributionNPS + medicalInsurancePremium + interestSavingAccount + interestEducationalLoan + (0.5 * donationCharity);
+            console.log(otherDeductions);
+
+            // Calculate total income
+            totalIncome =  totalIncome - otherDeductions;
+            console.log("totalIncome", totalIncome);
+
+
+            //Different cases according to different slabs:
+            
+
+			//OLD regime
+            if (totalIncome <= 250000) {
+                console.log("case1")
+                previousSlab = 0
+                finalTax = 0;
+            } else if (totalIncome > 250000 && totalIncome <= 500000) {
+                console.log("case2")
+                previousSlab = 0;
+                finalTax = 0;
+            } else if (totalIncome > 500000 && totalIncome < 750000) {
+                console.log("case3")
+                rate = 0.20;
+                previousSlab = 0 + from2pt5_upto_5;
+                console.log(previousSlab)
+                slabLower = 500000;
+                finalTax = calculateFinalTax(totalIncome, previousSlab, rate, slabLower);
+            } else if (totalIncome > 750000 && totalIncome < 1000000) {
+                console.log("case4")
+                rate = 0.20
+                previousSlab = 0 + from2pt5_upto_5 + from5_to_7pt5;
+                console.log(previousSlab)
+                slabLower = 750000;
+                finalTax = calculateFinalTax(totalIncome, previousSlab, rate, slabLower);
+            } else if (totalIncome > 1000000 && totalIncome < 1250000) {
+                console.log("case5")
+                rate = 0.30;
+                previousSlab = 0 + from2pt5_upto_5 + from5_to_7pt5 + from7pt5_to_10;
+                console.log(previousSlab)
+                slabLower = 1000000;
+                finalTax = calculateFinalTax(totalIncome, previousSlab, rate, slabLower);
+            } else if (totalIncome > 1250000 && totalIncome < 1500000) {
+                console.log("case6")
+                rate = 0.30
+                previousSlab = 0 + from2pt5_upto_5 + from5_to_7pt5 + from7pt5_to_10 + from10_to_12pt5;
+                console.log(previousSlab)
+                slabLower = 1250000;
+                finalTax = calculateFinalTax(totalIncome, previousSlab, rate, slabLower);
+            } else if (totalIncome > 1500000) {
+                console.log("case7")
+
+                rate = 0.30;
+                previousSlab = 0 + from2pt5_upto_5 + from5_to_7pt5 + from7pt5_to_10 + from10_to_12pt5 + from12pt5_to_15;
+                console.log(previousSlab)
+                slabLower = 1500000;
+                finalTax = calculateFinalTax(totalIncome, previousSlab, rate, slabLower);
+            }
+            
+            
+            //NEW regime
+            
+            const upto_3 = 0;
+            const from3_upto_6 = 15000 ;
+            const from6_to_9 = 30000 ;
+            const from9_to_12 = 45000;
+            const from12_to_15 = 60000;
+            
+            let totalIncomenew = grossSalaryIncome - standardDeduction
+            
+            if (totalIncomenew <= 300000) {
+                console.log("case1")
+                previousSlab = 0
+                finalTaxNew = 0;
+            } else if (totalIncomenew > 300000 && totalIncomenew <= 700000) {
+                console.log("case2")
+                previousSlab = 0;
+                finalTaxNew = 0;
+            } else if (totalIncomenew > 700000 && totalIncomenew < 900000) {
+                console.log("case3")
+                rate = 0.1;
+                previousSlab = 0 + from3_upto_6;
+                console.log(previousSlab)
+                slabLower = 700000;
+                finalTaxNew = calculateFinalTax(totalIncomenew, previousSlab, rate, slabLower);
+            } else if (totalIncomenew > 900000 && totalIncomenew < 1200000) {
+                console.log("case4")
+                rate = 0.15
+                previousSlab = 0 + from3_upto_6 + from6_to_9;
+                console.log(previousSlab)
+                slabLower = 900000;
+                finalTaxNew = calculateFinalTax(totalIncomenew, previousSlab, rate, slabLower);
+            } else if (totalIncomenew > 1200000 && totalIncomenew < 1500000) {
+                console.log("case5")
+                rate = 0.20;
+                previousSlab = 0 + from3_upto_6 + from6_to_9 + from9_to_12;
+                console.log(previousSlab)
+                slabLower = 1200000;
+                finalTaxNew = calculateFinalTax(totalIncomenew, previousSlab, rate, slabLower);
+            } else if (totalIncomenew > 1500000) {
+                console.log("case7")
+
+                rate = 0.30;
+                previousSlab = 0 + from3_upto_6 + from6_to_9 + from9_to_12 + from12_to_15;
+                console.log(previousSlab)
+                slabLower = 1500000;
+                finalTaxNew = calculateFinalTax(totalIncomenew, previousSlab, rate, slabLower);
+            }
+
+
+
+
+            document.getElementById("result").innerText = `Total Tax Payable:
+
+Old Regime ₹${finalTax.toFixed(2)}
+
+New Regime ₹${finalTaxNew.toFixed(2)}
+
+For more details on tax saving you can contact us on the contact us at aapkafinancefriend@gmail.com `
+
+			if (basicDeductions80C < 150000 && finalTax > 0){
+            document.getElementById("result2").innerText = 
+            `You can save tax on ₹${savemore.toFixed(2)} by investing more in tax saving schemes before 31st March 2024`
+            }
+;
+
+
+			
+
+
+        }
+
+
+        // Function to handle calculation when the button is clicked
+        document.getElementById("calculate-btn").addEventListener("click", function () {
+            // Calculate income tax
+            calculateIncomeTax();
+        });
+
+        function calculateFinalTax(totalIncome, previousSlab, rate, slabLower) {
+            console.log(totalIncome)
+            console.log(previousSlab)
+            console.log(rate)
+            console.log(slabLower)
+            taxBeforeCess = (previousSlab + ((totalIncome - slabLower) * rate))
+            cess = taxBeforeCess * 0.04;
+
+            return (taxBeforeCess + cess);
+        }
+    </script>
+</body>
+
+</html>
